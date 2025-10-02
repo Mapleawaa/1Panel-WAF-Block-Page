@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+      rel="shortcut icon"
+      href="data:image/png;base64,**手动省略 1Panel Logo**"
+  />
+  <title id="pageTitle">访问被限制</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      line-height: 1.6;
+      background: #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 语言切换按钮 */
+    .language-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .language-toggle:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .language-toggle svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    /* 壁纸背景 */
+    .wallpaper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background-image: url('https://eopageapi.2x.nz/pic?img=ua');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(0.8) contrast(1.1);
+    }
+
+    /* 模糊蒙版 */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: -1;
+    }
+
+    /* 内容区域 */
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .icon-container {
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .warning-icon {
+      width: 120px;
+      height: auto;
+      border-radius: 12px;
+      margin: 0 auto 15px;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .warning-icon img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .main-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 18px;
+      text-shadow: 0 3px 15px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.5px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .main-title::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 2px;
+    }
+
+    .description {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 35px;
+      line-height: 1.7;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      position: relative;
+      padding: 0 15px;
+    }
+
+    .details {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 18px;
+      padding: 25px;
+      text-align: left;
+      margin-bottom: 35px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .details:hover {
+      transform: translateY(-3px);
+    }
+
+    .details p {
+      margin: 15px 0;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      padding: 5px 0;
+    }
+
+    .details strong {
+      color: #fff;
+      min-width: 100px;
+      margin-right: 12px;
+      display: inline-block;
+      font-weight: 600;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      text-align: right;
+    }
+
+    .action-button {
+      background: rgba(255, 255, 255, 0.95);
+      color: #3a76ff;
+      border: none;
+      border-radius: 50px;
+      padding: 18px 25px;
+      font-size: 18px;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      margin-bottom: 30px;
+    }
+
+    .action-button:hover {
+      background: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .action-button:active {
+      transform: translateY(0);
+    }
+
+    .footer {
+      margin-top: 0;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .footer a {
+      color: rgba(255, 255, 255, 1);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    .footer a svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+      margin-right: 5px;
+    }
+
+    /* 文本高亮背景 */
+    .text-highlight {
+      background: rgba(0, 0, 0, 0.45);
+      padding: 4px 8px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 加载状态 */
+    .loading {
+      color: rgba(255, 255, 255, 0.7);
+      font-style: italic;
+    }
+
+    @media (max-width: 480px) {
+      .content {
+        padding: 30px 20px;
+      }
+      
+      .warning-icon {
+        width: 100px;
+      }
+      
+      .main-title {
+        font-size: 26px;
+      }
+      
+      .description {
+        font-size: 16px;
+      }
+      
+      .details {
+        padding: 20px;
+      }
+      
+      .details p {
+        font-size: 15px;
+      }
+      
+      .details strong {
+        min-width: 80px;
+      }
+      
+      .action-button {
+        padding: 16px;
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="language-toggle" id="languageToggle">
+    <svg t="1759333863768" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4788" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
+      <path d="M757.205333 473.173333c5.333333 0 10.453333 2.090667 14.250667 5.717334a19.029333 19.029333 0 0 1 5.888 13.738666v58.154667h141.184c11.093333 0 20.138667 8.704 20.138667 19.413333v232.704a19.797333 19.797333 0 0 1-20.138667 19.413334h-141.184v96.981333a19.754667 19.754667 0 0 1-20.138667 19.370667H716.8a20.565333 20.565333 0 0 1-14.250667-5.674667 19.029333 19.029333 0 0 1-5.888-13.696v-96.981333h-141.141333a20.565333 20.565333 0 0 1-14.250667-5.674667 19.029333 19.029333 0 0 1-5.930666-13.738667v-232.704c0-5.12 2.133333-10.112 5.930666-13.738666a20.565333 20.565333 0 0 1 14.250667-5.674667h141.141333v-58.154667c0-5.162667 2.133333-10.112 5.888-13.738666a20.565333 20.565333 0 0 1 14.250667-5.674667h40.362667zM192.597333 628.394667c22.272 0 40.32 17.365333 40.32 38.826666v38.741334c0 40.618667 32.512 74.368 74.624 77.397333l6.058667 0.213333h80.64c21.930667 0.469333 39.424 17.706667 39.424 38.784 0 21.077333-17.493333 38.314667-39.424 38.784H313.6c-89.088 0-161.28-69.461333-161.28-155.178666v-38.741334c0-21.461333 18.005333-38.826667 40.277333-38.826666z m504.106667 0h-80.64v116.394666h80.64v-116.394666z m161.28 0h-80.64v116.394666h80.64v-116.394666zM320.170667 85.333333c8.234667 0 15.658667 4.778667 18.773333 12.202667H338.773333l161.322667 387.84c2.517333 5.973333 1.706667 12.8-2.005333 18.090667a20.394667 20.394667 0 0 1-16.725334 8.533333h-43.52a20.181333 20.181333 0 0 1-18.688-12.202667L375.850667 395.648H210.901333l-43.264 104.149333A20.181333 20.181333 0 0 1 148.906667 512H105.514667a20.394667 20.39467 0 0 1-16.725334-8.533333 18.773333 18.773333 0 0 1-2.005333-18.090667l161.28-387.84A20.181333 20.181333 0 0 1 266.88 85.333333h53.290667zM716.8 162.901333c42.794667 0 83.84 16.341333 114.090667 45.44a152.234667 152.234667 0 0 1 47.232 109.738667v38.741333c-0.469333 21.077333-18.389333 37.930667-40.32 37.930667s-39.808-16.853333-40.32-37.930667v-38.741333c0-20.608-8.490667-40.32-23.637334-54.869333a82.304 82.304 0 0 0-57.045333-22.741334h-80.64c-21.888-0.469333-39.424-17.706667-39.424-38.784 0-21.077333 17.493333-38.314667 39.424-38.784h80.64z m-423.424 34.304L243.2 318.037333h100.48L293.418667 197.205333z" fill="#FFFFFF" p-id="4789"></path>
+    </svg>
+  </div>
+
+  <div class="wallpaper"></div>
+  <div class="overlay"></div>
+  
+  <div class="content">
+    <div class="icon-container">
+      <div class="warning-icon">
+        <img src="data:image/jpeg;base64,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" alt="敲你脑袋">
+      </div>
+    </div>
+    
+    <h1 class="main-title" id="mainTitle">访问被限制</h1>
+    <p class="description" id="description">您的访问区域因安全策略而被限制，暂时无法访问此页面</p>
+    
+    <div class="details">
+      <p><strong id="ipLabel">IP 地址:</strong> <span class="text-highlight loading" id="ipAddress">获取中...</span></p>
+      <p><strong id="locationLabel">位置:</strong> <span class="text-highlight loading" id="location">获取中...</span></p>
+      <p><strong id="ispLabel">ISP:</strong> <span class="text-highlight loading" id="isp">获取中...</span></p>
+    </div>
+    
+    <button class="action-button" id="backButton" onclick="history.back()">返回上页</button>
+    
+    <div class="footer">
+      <a href="https://1panel.cn" target="_blank">
+        <svg t="1759333906849" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6625" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M512 0l441.557333 256v512L512 1024 70.442667 768V256z m0 13.909333L80.938667 262.741333v497.664L512 1009.194667l431.061333-248.789334V262.741333zM377.173333 875.648l-247.509333-142.890667V291.242667L512 70.528l95.146667 54.912-380.8 221.653333v329.813334l247.125333 142.72z m268.757334-727.808l248.405333 143.402667v441.514666L512 953.472l-97.024-55.978667 382.677333-220.586666v-329.813334l-248.448-143.445333z m-91.178667 142.933333v122.410667l1.024 327.082667-29.482667 16.384-93.013333-53.290667 0.341333-290.176H382.208L381.866667 356.309333l145.578666-83.84z" p-id="6626" fill="#FFFFFF"></path></svg>
+        <span id="footerText">由 1Panel 提供防护</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // 语言切换功能
+    const translations = {
+      'zh-CN': {
+        pageTitle: '访问被限制',
+        mainTitle: '访问被限制',
+        description: '您的访问区域因安全策略而被限制，暂时无法访问此页面',
+        ipLabel: 'IP 地址:',
+        locationLabel: '位置:',
+        ispLabel: 'ISP:',
+        backButton: '返回上页',
+        footerText: '由 1Panel 提供防护'
+      },
+      'en': {
+        pageTitle: 'Access Restricted',
+        mainTitle: 'Access Restricted',
+        description: 'Your access region is restricted by security policy, temporarily unable to access this page',
+        ipLabel: 'IP Address:',
+        locationLabel: 'Location:',
+        ispLabel: 'ISP:',
+        backButton: 'Go Back',
+        footerText: 'Protected by 1Panel'
+      }
+    };
+
+    let currentLanguage = navigator.language || navigator.userLanguage;
+
+    // 如果不是中文或英文，则默认为中文
+    if (!['zh-CN', 'en'].includes(currentLanguage)) {
+      currentLanguage = 'zh-CN';
+    }
+
+    function updateLanguage(lang) {
+      currentLanguage = lang;
+      
+      const trans = translations[lang];
+      document.title = trans.pageTitle;
+      document.getElementById('mainTitle').textContent = trans.mainTitle;
+      document.getElementById('description').textContent = trans.description;
+      document.getElementById('ipLabel').textContent = trans.ipLabel;
+      document.getElementById('locationLabel').textContent = trans.locationLabel;
+      document.getElementById('ispLabel').textContent = trans.ispLabel;
+      document.getElementById('backButton').textContent = trans.backButton;
+      document.getElementById('footerText').textContent = trans.footerText;
+      
+      // 保存用户选择的语言
+      localStorage.setItem('selectedLanguage', lang);
+    }
+
+    // 检查是否有用户选择的语言
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage && ['zh-CN', 'en'].includes(savedLanguage)) {
+      updateLanguage(savedLanguage);
+    } else {
+      // 根据浏览器语言自动设置
+      updateLanguage(currentLanguage);
+    }
+
+    // 语言切换按钮事件
+    document.getElementById('languageToggle').addEventListener('click', function() {
+      const newLang = currentLanguage === 'zh-CN' ? 'en' : 'zh-CN';
+      updateLanguage(newLang);
+    });
+
+    // 使用 ipinfo.io API 获取 IP 信息
+    async function fetchIPInfo() {
+      try {
+        const response = await fetch('https://ipinfo.io/json');
+        const data = await response.json();
+        
+        // 更新 IP 信息
+        document.getElementById('ipAddress').textContent = data.ip;
+        document.getElementById('location').textContent = data.city ? `${data.city}, ${data.region}, ${data.country}` : '未知';
+        document.getElementById('isp').textContent = data.org ? data.org : '未知';
+        
+        // 移除加载状态样式
+        document.querySelectorAll('.loading').forEach(el => {
+          el.classList.remove('loading');
+        });
+      } catch (error) {
+        console.error('获取 IP 信息失败:', error);
+        
+        // 显示错误信息
+        document.getElementById('ipAddress').textContent = '获取失败';
+        document.getElementById('location').textContent = '获取失败';
+        document.getElementById('isp').textContent = '获取失败';
+        
+        // 移除加载状态样式
+        document.querySelectorAll('.loading').forEach(el => {
+          el.classList.remove('loading');
+        });
+      }
+    }
+
+    // 页面加载时执行
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchIPInfo();
+    });
+  </script>
+</body>
+</html>
